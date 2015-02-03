@@ -33,6 +33,7 @@ private:
     Document *doc;
     Document *xlsx;
     QString fileName;
+    QSettings *setting;
 
     void loadconfig();
     void saveconfig();

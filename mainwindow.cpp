@@ -5,6 +5,9 @@
 #include <cmath>
 #include <iostream>
 #include <QCloseEvent>
+#include <QDebug>
+#include <QDate>
+#include <QString>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -15,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbLoad, SIGNAL(clicked()), this, SLOT(onpushbutton()));
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(SaveExcel()));
     connect(this, SIGNAL(endInit()), this, SLOT(LoadExcel()));
+    setting = new QSettings("ipigaz", "resursvedconvert", this);
     loadconfig();
 }
 
@@ -25,48 +29,39 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    //указываем переменную которя будет хранить результат ответа
     QMessageBox::StandardButton mesRepl;
-
-    // используем тип сообщения 'question' и в конце строки
-    // указывает возможные варианты ответа 'Yes' и 'No'
-    mesRepl = QMessageBox::question(this, "Заголовок",
-                                    "Вы действительно хотите выйти?",
-                                    QMessageBox::Yes |
-                                    QMessageBox::No);
-    //проверяем какой вариант ответа выбран
-    if(mesRepl == QMessageBox::Yes)
-    {
-        //Если 'Yes' то закроем форму
+    mesRepl = QMessageBox::question(this, "Заголовок", "Вы действительно хотите выйти из программы?",
+                                    QMessageBox::Yes | QMessageBox::No);
+    if(mesRepl == QMessageBox::Yes) {
         saveconfig();
         event->accept();
-    }
-    else
-    {
+    } else {
         event->ignore();
     }
 }
 
 void MainWindow::loadconfig()
 {
-    QSettings setting(QSettings::NativeFormat, QSettings::UserScope, "ipigaz", "resursvedconvert");
-    ui->dspProcMash->setValue(setting.value("procMash", "4.0").toDouble());
-    ui->dspProcMat->setValue(setting.value("procMat", "4.0").toDouble());
-    ui->dateEdit->date().setDate(setting.value("fromyear", 2014).toInt(), 1, 1);
+    ui->dspProcMash->setValue(setting->value("procMash", 4.0).toString().replace(",",".").toDouble());
+    ui->dspProcMat->setValue(setting->value("procMat", 4.0).toString().replace(",",".").toDouble());
+    ui->dateEdit->setDate(QDate::fromString(setting->value("fromyear", 2014).toString(), "yyyy"));
+    ui->textEditObjectName->insertPlainText(setting->value("project", "").toString());
 }
 
 void MainWindow::saveconfig()
 {
-    QSettings setting(QSettings::NativeFormat, QSettings::UserScope, "ipigaz", "resursvedconvert");
-    setting.setValue("procMash", ui->dspProcMash->text().toDouble());
-    setting.setValue("procMat", ui->dspProcMat->text().toDouble());
-    setting.setValue("fromyear", ui->dateEdit->date().year());
+    setting->setValue("procMash", ui->dspProcMash->text());
+    setting->setValue("procMat", ui->dspProcMat->text());
+    setting->setValue("fromyear", ui->dateEdit->date().year());
+    QString a = ui->textEditObjectName->toPlainText();
+    setting->setValue("project", a);
+    setting->sync();
 }
 
 void MainWindow::onpushbutton()
 {
     QString my_homedrive(getenv("HOMEDRIVE"));
-    QString my_homepath(qgetenv("HOMEPATH"));
+    QString my_homepath(getenv("HOMEPATH"));
     fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                        my_homedrive + my_homepath + "\\Documents\\", tr("Excel File (*.xlsx)"));
     emit endInit();
