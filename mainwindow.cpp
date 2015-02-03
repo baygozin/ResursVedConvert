@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
+#include <QMessageBox>
 #include <cmath>
 #include <iostream>
+#include <QCloseEvent>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -13,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbLoad, SIGNAL(clicked()), this, SLOT(onpushbutton()));
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(SaveExcel()));
     connect(this, SIGNAL(endInit()), this, SLOT(LoadExcel()));
+    loadconfig();
 }
 
 MainWindow::~MainWindow()
@@ -20,10 +23,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    //указываем переменную которя будет хранить результат ответа
+    QMessageBox::StandardButton mesRepl;
+
+    // используем тип сообщения 'question' и в конце строки
+    // указывает возможные варианты ответа 'Yes' и 'No'
+    mesRepl = QMessageBox::question(this, "Заголовок",
+                                    "Вы действительно хотите выйти?",
+                                    QMessageBox::Yes |
+                                    QMessageBox::No);
+    //проверяем какой вариант ответа выбран
+    if(mesRepl == QMessageBox::Yes)
+    {
+        //Если 'Yes' то закроем форму
+        saveconfig();
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
+}
+
 void MainWindow::loadconfig()
 {
     QSettings setting(QSettings::NativeFormat, QSettings::UserScope, "ipigaz", "resursvedconvert");
-    ui->dspProcMash->
+    ui->dspProcMash->setValue(setting.value("procMash", "4.0").toDouble());
+    ui->dspProcMat->setValue(setting.value("procMat", "4.0").toDouble());
+    ui->dateEdit->date().setDate(setting.value("fromyear", 2014).toInt(), 1, 1);
 }
 
 void MainWindow::saveconfig()

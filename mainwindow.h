@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSettings>
+#include <QCloseEvent>
 #include "xlsxdocument.h"
 #include "laborman.h"
 #include "machine.h"
@@ -37,6 +38,7 @@ private:
     void saveconfig();
     void setColumnRowDim(Document *xlsx);
     void createHeader(Document *xlsx);
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void onpushbutton();
