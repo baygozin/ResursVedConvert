@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QDate>
 #include <QString>
-
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,6 +46,8 @@ void MainWindow::loadconfig()
     ui->dspProcMat->setValue(setting->value("procMat", 4.0).toString().replace(",",".").toDouble());
     ui->dateEdit->setDate(QDate::fromString(setting->value("fromyear", 2014).toString(), "yyyy"));
     ui->textEditObjectName->insertPlainText(setting->value("project", "").toString());
+    loadPath = setting->value("loadpath", "").toString();
+    savePath = setting->value("savepath", "").toString();
 }
 
 void MainWindow::saveconfig()
@@ -53,17 +55,19 @@ void MainWindow::saveconfig()
     setting->setValue("procMash", ui->dspProcMash->text());
     setting->setValue("procMat", ui->dspProcMat->text());
     setting->setValue("fromyear", ui->dateEdit->date().year());
-    QString a = ui->textEditObjectName->toPlainText();
-    setting->setValue("project", a);
+    setting->setValue("project", ui->textEditObjectName->toPlainText());
+    setting->setValue("loadpath", loadPath);
+    setting->setValue("savepath", savePath);
     setting->sync();
 }
 
 void MainWindow::onpushbutton()
 {
-    QString my_homedrive(getenv("HOMEDRIVE"));
-    QString my_homepath(getenv("HOMEPATH"));
-    fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                       my_homedrive + my_homepath + "\\Documents\\", tr("Excel File (*.xlsx)"));
+    fileName = QFileDialog::getOpenFileName(this, tr("Open File"), loadPath, tr("Excel File (*.xlsx)"));
+    if (!fileName.isEmpty()) {
+        QFileInfo loadFileInfo(fileName);
+        loadPath = loadFileInfo.absoluteFilePath();
+    }
     emit endInit();
 }
 
@@ -119,11 +123,10 @@ void MainWindow::LoadExcel()
 
 void MainWindow::SaveExcel()
 {
-    QString my_homedrive(getenv("HOMEDRIVE"));
-    QString my_homepath(qgetenv("HOMEPATH"));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"),
-                       my_homedrive + my_homepath + "\\Documents\\", tr("Excel File (*.xlsx)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), savePath, tr("Excel File (*.xlsx)"));
     if (!fileName.isEmpty()) {
+        QFileInfo saveFileInfo(fileName);
+        savePath = saveFileInfo.absoluteFilePath();
         xlsx = new Document();
         xlsx->addSheet("Выборка ресурсов");
         // Начнем создавать таблицу выборки ресурсов

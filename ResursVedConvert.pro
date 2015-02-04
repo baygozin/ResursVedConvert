@@ -8,6 +8,8 @@
 #QMAKE_CXXFLAGS_DEBUG += -pg
 #QMAKE_LFLAGS_DEBUG += -pg
 #QMAKE_LFLAGS += -static -static-libgcc
+QMAKE_CXXFLAGS_RELEASE += -MP9
+QMAKE_CFLAGS_DEBUG += -MP9
 
 include(3rdparty/qtxlsx/src/xlsx/qtxlsx.pri)
 

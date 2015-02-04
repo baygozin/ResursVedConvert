@@ -32,6 +32,8 @@ private:
     Ui::MainWindow *ui;
     Document *doc;
     Document *xlsx;
+    QString loadPath;
+    QString savePath;
     QString fileName;
     QSettings *setting;
 
