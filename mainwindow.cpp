@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete setting;
     delete ui;
 }
 
