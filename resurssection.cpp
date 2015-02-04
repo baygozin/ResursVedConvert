@@ -1,7 +1,7 @@
 #include "resurssection.h"
 
 // Правило сортировки по 1-й колонке "Код ресурса"
-bool RowCodeLess(const sampleRow a, const sampleRow b) {
+bool RowCodeLess(const sampleRow &a, const sampleRow &b) {
     QString codeA = a.cod;
     codeA.remove(QChar('-'), Qt::CaseInsensitive).remove(QChar('_'), Qt::CaseInsensitive);
     QString codeB = b.cod;
@@ -10,7 +10,7 @@ bool RowCodeLess(const sampleRow a, const sampleRow b) {
 }
 
 // Правило сортировки по 1-й колонке "Код ресурса"
-bool RowSummLess(const sampleRow a, const sampleRow b) {
+bool RowSummLess(const sampleRow &a, const sampleRow &b) {
     double codeA = a.prSum;
     double codeB = b.prSum;
     if (codeA < codeB) {return true;} else {return false;}

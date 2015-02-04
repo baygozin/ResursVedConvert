@@ -38,3 +38,8 @@ HEADERS  += mainwindow.h \
     equipment.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resources.qrc
+
+RC_ICONS = panda.ico

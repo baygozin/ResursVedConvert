@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     connect(ui->pbLoad, SIGNAL(clicked()), this, SLOT(onpushbutton()));
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(SaveExcel()));

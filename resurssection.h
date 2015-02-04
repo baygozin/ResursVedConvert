@@ -7,8 +7,8 @@
 
 QTXLSX_USE_NAMESPACE
 
-bool RowCodeLess(const sampleRow a, const sampleRow b);
-bool RowSummLess(const sampleRow a, const sampleRow b);
+bool RowCodeLess(const sampleRow &a, const sampleRow &b);
+bool RowSummLess(const sampleRow &a, const sampleRow &b);
 
 class ResursSection : public QObject
 {
