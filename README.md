@@ -1,2 +1,2 @@
 # ResusVedConvert
-Convertor Resource Дшые
+Конвертор ресурсных ведомостей
